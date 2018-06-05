@@ -3,7 +3,7 @@ import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { By } from '@angular/platform-browser';
 import { DebugElement } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router'; 
-import { Observable } from 'rxjs';
+import { Observable, Subject } from 'rxjs';
 
 import { UserDetailsComponent } from './user-details.component';
 
@@ -16,7 +16,17 @@ class RouterStub                  // [KEY]: The fake Router
 
 class ActivatedRouteStub          // [KEY]: The fake ActivatedRoute
 {
-  params: Observable<any> = Observable.empty();   // Returns an Observable
+  private subject = new Subject;
+
+  push( value )
+  {
+    this.subject.next( value );
+  }
+
+  get params()                            // Use "get" to make params a public property
+  {
+    return this.subject.asObservable();
+  }
 }
 
 describe('UserDetailsComponent', () => {
@@ -51,5 +61,14 @@ describe('UserDetailsComponent', () => {
     expect( spy ).toHaveBeenCalledWith( ['users'] );
   });
 
+  it('should redirect the user to the not found page when an invalid id is passed', () => {
+    
+    let router = TestBed.get( Router );
+    let spy = spyOn( router, 'navigate' );
+    let route = TestBed.get( ActivatedRoute );
+  
+    route.push( { id: 0 } );
 
+    expect( spy ).toHaveBeenCalledWith( ['not-found'] );
+  });
 });
