@@ -5,7 +5,7 @@ import { By } from '@angular/platform-browser';
 import { DebugElement } from '@angular/core';
 
 import { AppComponent } from './app.component';
-import { RouterOutlet } from '@angular/router';
+import { RouterOutlet, RouterLinkWithHref } from '@angular/router';
 
 describe('AppComponent', () => {
   let component: AppComponent;
@@ -31,4 +31,14 @@ describe('AppComponent', () => {
 
     expect( de ).not.toBeNull();
   });
+
+  it( 'should have a link to /todos', () => {
+
+    let debugElemts = fixture.debugElement.queryAll( By.directive( RouterLinkWithHref ) );
+
+    let index = debugElemts.find( de => de.properties['href'] === '/todos' );
+
+    expect( index ).toBeGreaterThan( -1 );
+  });
+  
 });
