@@ -1,5 +1,5 @@
 /* tslint:disable:no-unused-variable */
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { async, ComponentFixture, TestBed, fakeAsync, tick } from '@angular/core/testing';
 import { By } from '@angular/platform-browser';
 import { DebugElement } from '@angular/core';
 import { HttpModule } from '@angular/http';
@@ -26,7 +26,7 @@ describe('TodosComponent', () => {
     component = fixture.componentInstance;
   });
 
-  it('should load todos from Service', () => {
+  it('(Observable) should load todos from Service', () => {
     
     let todoService = TestBed.get( TodoService );     // [KEY]: Get Service instance from TestBed
     spyOn( todoService, 'getTodos' ).and.returnValue( [ [1, 2, 3 ] ] );
@@ -36,4 +36,30 @@ describe('TodosComponent', () => {
     expect( component.todos.length ).toBe( 3 );
 
   });
+
+  // async()
+  it('(Promise) should load todos from Service', async(() => {
+    
+    let todoService = TestBed.get( TodoService );     // [KEY]: Get Service instance from TestBed
+    spyOn( todoService, 'getTodos' ).and.returnValue( [ [1, 2, 3 ] ] );
+
+    fixture.detectChanges();
+
+    fixture.whenStable().then( () => {     
+      expect( component.todos.length ).toBe( 3 );
+    });
+  }));
+
+  // fakeAsync()
+  it('(Promise) should load todos from Service', fakeAsync(() => {
+    
+    let todoService = TestBed.get( TodoService );     // [KEY]: Get Service instance from TestBed
+    spyOn( todoService, 'getTodos' ).and.returnValue( [ [1, 2, 3 ] ] );
+
+    fixture.detectChanges();
+
+    tick();
+    expect( component.todos.length ).toBe( 3 );
+  
+  }));
 });

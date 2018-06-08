@@ -13,7 +13,12 @@ export class TodosComponent implements OnInit {
   constructor(private service: TodoService) {}
 
   ngOnInit() { 
-    this.service.getTodos().subscribe(t => this.todos = t);
+
+    // Observable
+    // this.service.getTodos().subscribe(t => this.todos = t);
+
+    // Promise
+    this.service.getTodosPromise().then( t => this.todos = t );
   }
 
   add() { 
